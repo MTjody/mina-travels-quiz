@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Country Flag Quiz</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="quiz-container">
+            <h1>Country Flag Quiz</h1>
+            
+            <div id="game-screen" class="screen">
+                <div class="flag-display">
+                    <span id="flag-emoji" class="flag">🇺🇸</span>
+                </div>
+                
+                <div class="question">
+                    <p>Which country does this flag belong to?</p>
+                </div>
+                
+                <div class="options">
+                    <button class="option-btn" data-answer="0">Option 1</button>
+                    <button class="option-btn" data-answer="1">Option 2</button>
+                    <button class="option-btn" data-answer="2">Option 3</button>
+                    <button class="option-btn" data-answer="3">Option 4</button>
+                </div>
+            </div>
+            
+            <div id="result-screen" class="screen hidden">
+                <div class="result-icon">
+                    <span id="result-emoji">✅</span>
+                </div>
+                
+                <div class="result-message">
+                    <p id="result-text">Correct!</p>
+                </div>
+                
+                <button id="continue-btn" class="action-btn">Continue</button>
+                <button id="restart-btn" class="action-btn hidden">Restart</button>
+            </div>
+            
+            <div class="score">
+                <p>Score: <span id="score">0</span></p>
+            </div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>

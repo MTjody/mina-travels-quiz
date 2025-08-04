@@ -1,0 +1,33 @@
+{
+  "name": "country-flag-quiz",
+  "version": "1.0.0",
+  "description": "A simple and fun country flag quiz game with all 195 countries",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve .",
+    "dev": "npx live-server --port=8000",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "claude": "claude"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mtjody/country-flag-quiz.git"
+  },
+  "keywords": [
+    "quiz",
+    "flags",
+    "countries",
+    "geography",
+    "game",
+    "educational"
+  ],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mtjody/country-flag-quiz/issues"
+  },
+  "homepage": "https://mtjody.github.io/country-flag-quiz/",
+  "dependencies": {
+    "@anthropic-ai/claude-code": "^1.0.67"
+  }
+}
