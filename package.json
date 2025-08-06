@@ -1,7 +1,7 @@
 {
-  "name": "country-flag-quiz",
+  "name": "mina-travels-quiz",
   "version": "1.0.0",
-  "description": "A simple and fun country flag quiz game with all 195 countries",
+  "description": "A simple and fun quiz game with all 195 countries",
   "main": "index.html",
   "scripts": {
     "start": "npx serve .",
@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mtjody/country-flag-quiz.git"
+    "url": "git+https://github.com/mtjody/mina-travels-quiz.git"
   },
   "keywords": [
     "quiz",
@@ -24,10 +24,11 @@
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/mtjody/country-flag-quiz/issues"
+    "url": "https://github.com/mtjody/mina-travels-quiz/issues"
   },
-  "homepage": "https://mtjody.github.io/country-flag-quiz/",
+  "homepage": "https://mtjody.github.io/mina-travels-quiz/",
   "dependencies": {
-    "@anthropic-ai/claude-code": "^1.0.67"
+    "@anthropic-ai/claude-code": "^1.0.67",
+    "firebase": "^12.0.0"
   }
 }

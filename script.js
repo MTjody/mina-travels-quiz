@@ -1,4 +1,125 @@
-// Country data with comprehensive list of countries and their flag emojis
+// Import Firebase from CDN
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js';
+import { getDatabase, ref, set, onValue, push } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js';
+import { initializeAppCheck, ReCaptchaV3Provider } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-app-check.js';
+
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyCw0pPlQ3K0liSxPdXnlVYKd8lz0hiWNw0",
+  authDomain: "mtjody-vercel-app.firebaseapp.com",
+  databaseURL: "https://mtjody-vercel-app-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "mtjody-vercel-app",
+  storageBucket: "mtjody-vercel-app.firebasestorage.app",
+  messagingSenderId: "795359187531",
+  appId: "1:795359187531:web:ba36772eaae4b0214633ce"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+
+// Initialize App Check for development (skip ReCaptcha for now)
+try {
+    // For development, we'll use debug mode
+    self.FIREBASE_APPCHECK_DEBUG_TOKEN = true;
+    
+    const appCheck = initializeAppCheck(app, {
+        provider: new ReCaptchaV3Provider('6LflfpwrAAAAAM2-Nb1m_zCI92mPR0i8zICH5eTw'), // Test key
+        isTokenAutoRefreshEnabled: true
+    });
+    console.log('✅ App Check initialized');
+} catch (error) {
+    console.warn('⚠️  App Check initialization failed:', error);
+    console.log('Proceeding without App Check...');
+}
+
+const db = getDatabase(app);
+
+// Get reference to your scores collection
+const scoresRef = ref(db, 'gameScores');
+
+async function addUserToFirebase(name) {
+    try {
+        console.log('Attempting to add user to Firebase:', name);
+        
+        // Use the pattern from Firebase docs - get fresh database reference
+        const database = getDatabase();
+        console.log('Got database reference');
+        
+        // Generate a new key under gameScores
+        const newUserRef = push(ref(database, 'gameScores'));
+        currentUserKey = newUserRef.key;
+        console.log('Generated user key:', currentUserKey);
+        
+        console.log('About to call set() with data:', { name: name, score: 0 });
+        
+        // Use the docs pattern: set(ref(db, path), data)
+        await set(ref(database, 'gameScores/' + currentUserKey), {
+            name: name,
+            score: 0
+        });
+        
+        console.log('✅ User added to Firebase successfully:', name, 'with key:', currentUserKey);
+        
+        // Store the reference for future use
+        currentUserRef = ref(database, 'gameScores/' + currentUserKey);
+        
+        // Listen to this user's score for real-time updates
+        listenToUserScore();
+        
+        // Save the user key to localStorage for persistence
+        localStorage.setItem('firebaseUserKey', currentUserKey);
+        
+    } catch (error) {
+        console.error('❌ Error adding user to Firebase:', error);
+        console.error('Error code:', error.code);
+        console.error('Error message:', error.message);
+    }
+}
+
+function listenToUserScore() {
+    if (currentUserKey) {
+        const userScoreRef = ref(db, `gameScores/${currentUserKey}/score`);
+        onValue(userScoreRef, (snapshot) => {
+            const firebaseScore = snapshot.val();
+            if (firebaseScore !== null && firebaseScore !== score) {
+                score = firebaseScore;
+                scoreDisplay.textContent = score;
+            }
+        });
+    }
+}
+
+function updateScoreInFirebase(newScore) {
+    console.log('Attempting to update score to:', newScore, 'for user:', currentUserKey || 'no user');
+    if (currentUserKey) {
+        const database = getDatabase();
+        const scoreRef = ref(database, `gameScores/${currentUserKey}/score`);
+        set(scoreRef, newScore).then(() => {
+            console.log('✅ Score updated in Firebase successfully to:', newScore);
+        }).catch((error) => {
+            console.error('❌ Error updating score in Firebase:', error);
+        });
+    } else {
+        console.warn('No currentUserKey available for score update');
+    }
+}
+
+function listenToAllScores(callback) {
+    console.log('Setting up listener for all scores');
+    onValue(scoresRef, (snapshot) => {
+        const allScores = snapshot.val();
+        console.log('Received scores from Firebase:', allScores);
+        if (allScores) {
+            const scoresArray = Object.values(allScores);
+            console.log('Converted to array:', scoresArray);
+            callback(scoresArray);
+        } else {
+            console.log('No scores found in Firebase');
+            callback([]);
+        }
+    });
+}
+
 const countries = [
     { name: 'Afghanistan', flag: '🇦🇫' },
     { name: 'Albania', flag: '🇦🇱' },
@@ -194,145 +315,317 @@ const countries = [
     { name: 'Zimbabwe', flag: '🇿🇼' }
 ];
 
-// Game state
-let score = 0;
-let currentQuestion = null;
-let usedCountries = [];
+const targetCountries = new Set([
+    'Argentina',
+    'Austria', 
+    'Bahrain',
+    'Belgium',
+    'Brazil',
+    'Bulgaria',
+    'Cambodia',
+    'Cape Verde',
+    'China',
+    'Colombia',
+    'Croatia',
+    'Cuba',
+    'Cyprus',
+    'Czech Republic',
+    'Denmark',
+    'Estonia',
+    'Finland',
+    'France',
+    'Germany',
+    'Greece',
+    'Hungary',
+    'Iceland',
+    'India',
+    'Iran',
+    'Ireland',
+    'Italy',
+    'Jordan',
+    'Kuwait',
+    'Latvia',
+    'Lebanon',
+    'Lithuania',
+    'Luxembourg',
+    'Montenegro',
+    'Morocco',
+    'Netherlands',
+    'Oman',
+    'Peru',
+    'Poland',
+    'Portugal',
+    'Romania',
+    'Slovakia',
+    'Slovenia',
+    'South Africa',
+    'Spain',
+    'Sri Lanka',
+    'Sweden',
+    'Tanzania',
+    'Thailand',
+    'Tunisia',
+    'Turkey',
+    'Uganda',
+    'United Arab Emirates',
+    'United Kingdom',
+    'United States',
+    'Uruguay',
+    'Vatican City',
+    'Vietnam',
+    'Norway'
+]);
 
-// DOM elements
-let flagEmoji, optionButtons, gameScreen, resultScreen, resultEmoji, resultText, continueBtn, restartBtn, scoreDisplay;
+let score = 0;
+let clickedCountries = new Set();
+let playerName = '';
+let currentUserRef = null;
+let currentUserKey = null;
+
+let scoreDisplay, countriesGrid, newGameBtn;
+let welcomeScreen, gameScreen, playerNameInput, startGameBtn, playerDisplay;
+
+const STORAGE_KEY = 'gridFlagQuizData';
+
+
+function saveGameData() {
+    const gameData = {
+        playerName: playerName,
+        score: score,
+        clickedCountries: Array.from(clickedCountries)
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(gameData));
+}
+
+function loadGameData() {
+    try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+            const gameData = JSON.parse(saved);
+            return {
+                playerName: gameData.playerName || '',
+                score: gameData.score || 0,
+                clickedCountries: new Set(gameData.clickedCountries || [])
+            };
+        }
+    } catch (error) {
+        console.warn('Failed to load game data:', error);
+    }
+    return null;
+}
+
+function clearGameData() {
+    localStorage.removeItem(STORAGE_KEY);
+}
 
 function initElements() {
-    flagEmoji = document.getElementById('flag-emoji');
-    optionButtons = document.querySelectorAll('.option-btn');
-    gameScreen = document.getElementById('game-screen');
-    resultScreen = document.getElementById('result-screen');
-    resultEmoji = document.getElementById('result-emoji');
-    resultText = document.getElementById('result-text');
-    continueBtn = document.getElementById('continue-btn');
-    restartBtn = document.getElementById('restart-btn');
     scoreDisplay = document.getElementById('score');
+    countriesGrid = document.getElementById('countries-grid');
+    newGameBtn = document.getElementById('new-game-btn');
+    welcomeScreen = document.getElementById('welcome-screen');
+    gameScreen = document.getElementById('game-screen');
+    playerNameInput = document.getElementById('player-name');
+    startGameBtn = document.getElementById('start-game-btn');
+    playerDisplay = document.getElementById('player-display');
 }
 
 function initEventListeners() {
-    optionButtons.forEach(btn => {
-        btn.addEventListener('click', handleAnswer);
-    });
+    newGameBtn.addEventListener('click', startNewGame);
+    startGameBtn.addEventListener('click', handleStartGame);
     
-    continueBtn.addEventListener('click', continueGame);
-    restartBtn.addEventListener('click', restartGame);
+    playerNameInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            handleStartGame();
+        }
+    });
 }
 
-function getRandomCountries(count) {
-    const availableCountries = countries.filter(country => 
-        !usedCountries.includes(country.name)
-    );
+function handleStartGame() {
+    const name = playerNameInput.value.trim();
     
-    if (availableCountries.length < count) {
-        usedCountries = [];
-        return getRandomCountries(count);
+    if (name === '') {
+        playerNameInput.focus();
+        playerNameInput.style.borderColor = '#dc3545';
+        setTimeout(() => {
+            playerNameInput.style.borderColor = '#e9ecef';
+        }, 2000);
+        return;
     }
     
-    const shuffled = [...availableCountries].sort(() => Math.random() - 0.5);
-    return shuffled.slice(0, count);
+    playerName = name;
+    playerDisplay.textContent = playerName;
+    
+    // Add user to Firebase when they start the game
+    if (name.toLowerCase() !== 'admin') {
+        addUserToFirebase(name);
+    }
+    
+    welcomeScreen.style.display = 'none';
+    gameScreen.classList.remove('hidden');
+    
+    if (name.toLowerCase() === 'admin') {
+        showAdminTable();
+    } else {
+        renderGrid();
+    }
+    saveGameData();
 }
 
-function startNewQuestion() {
-    const questionCountries = getRandomCountries(4);
-    const correctCountry = questionCountries[Math.floor(Math.random() * 4)];
+function createCountryItem(country) {
+    const item = document.createElement('div');
+    item.className = 'country-item';
+    item.dataset.countryName = country.name;
     
-    currentQuestion = {
-        correct: correctCountry,
-        options: questionCountries
-    };
+    const flagEmoji = document.createElement('div');
+    flagEmoji.className = 'flag-emoji';
+    flagEmoji.textContent = country.flag;
     
-    usedCountries.push(correctCountry.name);
+    const countryName = document.createElement('div');
+    countryName.className = 'country-name';
+    countryName.textContent = country.name;
     
-    flagEmoji.textContent = correctCountry.flag;
+    item.appendChild(flagEmoji);
+    item.appendChild(countryName);
     
-    optionButtons.forEach((btn, index) => {
-        btn.textContent = questionCountries[index].name;
-        btn.className = 'option-btn';
-        btn.disabled = false;
-        btn.dataset.answer = index;
-    });
+    item.addEventListener('click', handleCountryClick);
     
-    showScreen('game');
+    return item;
 }
 
-function handleAnswer(e) {
-    const selectedIndex = parseInt(e.target.dataset.answer);
-    const selectedCountry = currentQuestion.options[selectedIndex];
-    const isCorrect = selectedCountry.name === currentQuestion.correct.name;
+function handleCountryClick(e) {
+    const item = e.currentTarget;
+    const countryName = item.dataset.countryName;
     
-    optionButtons.forEach((btn, index) => {
-        btn.disabled = true;
-        if (currentQuestion.options[index].name === currentQuestion.correct.name) {
-            btn.classList.add('correct');
-        } else if (index === selectedIndex && !isCorrect) {
-            btn.classList.add('incorrect');
-        }
-    });
+    if (clickedCountries.has(countryName)) {
+        return;
+    }
     
-    setTimeout(() => {
-        if (isCorrect) {
-            handleCorrectAnswer();
-        } else {
-            handleIncorrectAnswer();
-        }
-    }, 1000);
-}
-
-function handleCorrectAnswer() {
-    score++;
+    clickedCountries.add(countryName);
+    
+    const flagEmoji = item.querySelector('.flag-emoji');
+    
+    if (targetCountries.has(countryName)) {
+        item.classList.add('correct');
+        flagEmoji.textContent = '✅';
+        score += 1;
+    } else {
+        item.classList.add('incorrect');
+        flagEmoji.textContent = '❌';
+        score -= 2;
+    }
+    
     updateScore();
-    
-    resultEmoji.textContent = '✅';
-    resultText.textContent = 'Correct!';
-    continueBtn.classList.remove('hidden');
-    restartBtn.classList.add('hidden');
-    
-    showScreen('result');
+    saveGameData();
 }
 
-function handleIncorrectAnswer() {
-    resultEmoji.textContent = '❌';
-    resultText.textContent = `Wrong! It was ${currentQuestion.correct.name}`;
-    continueBtn.classList.add('hidden');
-    restartBtn.classList.remove('hidden');
+function renderGrid() {
+    countriesGrid.innerHTML = '';
     
-    showScreen('result');
+    countries.forEach(country => {
+        const item = createCountryItem(country);
+        
+        if (clickedCountries.has(country.name)) {
+            const flagEmoji = item.querySelector('.flag-emoji');
+            if (targetCountries.has(country.name)) {
+                item.classList.add('correct');
+                flagEmoji.textContent = '✅';
+            } else {
+                item.classList.add('incorrect');
+                flagEmoji.textContent = '❌';
+            }
+        }
+        
+        countriesGrid.appendChild(item);
+    });
 }
 
-function continueGame() {
-    startNewQuestion();
-}
-
-function restartGame() {
+function startNewGame() {
+    clickedCountries = new Set();
     score = 0;
-    usedCountries = [];
     updateScore();
-    startNewQuestion();
+    renderGrid();
+    saveGameData();
 }
 
 function updateScore() {
     scoreDisplay.textContent = score;
+    updateScoreInFirebase(score);
 }
 
-function showScreen(screenName) {
-    if (screenName === 'game') {
-        gameScreen.classList.remove('hidden');
-        resultScreen.classList.add('hidden');
-    } else if (screenName === 'result') {
-        gameScreen.classList.add('hidden');
-        resultScreen.classList.remove('hidden');
-    }
+function showAdminTable() {
+    const adminTable = document.getElementById('admin-table');
+    const adminTableBody = document.getElementById('admin-table-body');
+    const countriesGrid = document.getElementById('countries-grid');
+    const gameControls = document.querySelector('.game-controls');
+    
+    // Hide grid and controls
+    countriesGrid.style.display = 'none';
+    gameControls.style.display = 'none';
+    
+    // Clear existing table body
+    adminTableBody.innerHTML = '';
+    
+    // Listen to Firebase scores for real-time leaderboard
+    listenToAllScores((scoresArray) => {
+        // Sort by score (highest to lowest)
+        const sortedData = scoresArray.sort((a, b) => b.score - a.score);
+        
+        // Clear table body before repopulating
+        adminTableBody.innerHTML = '';
+        
+        // Populate table with Firebase data
+        sortedData.forEach(user => {
+            const row = document.createElement('tr');
+            
+            const nameCell = document.createElement('td');
+            nameCell.textContent = user.name;
+            
+            const scoreCell = document.createElement('td');
+            scoreCell.textContent = user.score;
+            
+            row.appendChild(nameCell);
+            row.appendChild(scoreCell);
+            adminTableBody.appendChild(row);
+        });
+    });
+    
+    // Show admin table
+    adminTable.classList.remove('hidden');
 }
 
 function initGame() {
     initElements();
     initEventListeners();
-    startNewQuestion();
+    
+    const savedData = loadGameData();
+    if (savedData && savedData.playerName) {
+        playerName = savedData.playerName;
+        score = savedData.score;
+        clickedCountries = savedData.clickedCountries;
+        
+        // Restore Firebase user reference if available
+        const savedUserKey = localStorage.getItem('firebaseUserKey');
+        if (savedUserKey && playerName.toLowerCase() !== 'admin') {
+            currentUserKey = savedUserKey;
+            currentUserRef = ref(db, `gameScores/${currentUserKey}`);
+            console.log('Restored Firebase user ref:', currentUserKey);
+            listenToUserScore();
+        }
+        
+        playerDisplay.textContent = playerName;
+        updateScore();
+        
+        welcomeScreen.style.display = 'none';
+        gameScreen.classList.remove('hidden');
+        
+        if (playerName.toLowerCase() === 'admin') {
+            showAdminTable();
+        } else {
+            renderGrid();
+        }
+    } else {
+        playerNameInput.focus();
+    }
 }
 
 document.addEventListener('DOMContentLoaded', initGame);

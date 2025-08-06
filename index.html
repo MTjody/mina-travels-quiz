@@ -3,50 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Country Flag Quiz</title>
+    <title>Grid Flag Quiz</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
         <div class="quiz-container">
-            <h1>Country Flag Quiz</h1>
+            <h1>Grid Flag Quiz</h1>
             
-            <div id="game-screen" class="screen">
-                <div class="flag-display">
-                    <span id="flag-emoji" class="flag">🇺🇸</span>
+            <div id="welcome-screen" class="welcome-screen">
+                <div class="welcome-message">
+                    <p>Welcome to the Grid Flag Quiz!</p>
+                    <p>Test your geography knowledge by clicking on the correct countries.</p>
                 </div>
                 
-                <div class="question">
-                    <p>Which country does this flag belong to?</p>
-                </div>
-                
-                <div class="options">
-                    <button class="option-btn" data-answer="0">Option 1</button>
-                    <button class="option-btn" data-answer="1">Option 2</button>
-                    <button class="option-btn" data-answer="2">Option 3</button>
-                    <button class="option-btn" data-answer="3">Option 4</button>
+                <div class="name-input-section">
+                    <label for="player-name">Enter your name:</label>
+                    <input type="text" id="player-name" placeholder="Your name" maxlength="20">
+                    <button id="start-game-btn" class="action-btn">Start Game</button>
                 </div>
             </div>
             
-            <div id="result-screen" class="screen hidden">
-                <div class="result-icon">
-                    <span id="result-emoji">✅</span>
+            <div id="game-screen" class="game-screen hidden">
+                <div class="game-info">
+                    <div class="player-info">
+                        <p>Player: <span id="player-display"></span></p>
+                    </div>
+                    <div class="score">
+                        <p>Score: <span id="score">0</span></p>
+                    </div>
+                    <div class="instructions">
+                        <p>Click on the countries that match the target set!</p>
+                    </div>
                 </div>
                 
-                <div class="result-message">
-                    <p id="result-text">Correct!</p>
+                <div id="admin-table" class="admin-table hidden">
+                    <h2>Player Scores</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Score</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-table-body">
+                        </tbody>
+                    </table>
                 </div>
                 
-                <button id="continue-btn" class="action-btn">Continue</button>
-                <button id="restart-btn" class="action-btn hidden">Restart</button>
-            </div>
-            
-            <div class="score">
-                <p>Score: <span id="score">0</span></p>
+                <div id="countries-grid" class="countries-grid">
+                    <!-- Grid items will be generated dynamically -->
+                </div>
+                
+                <div class="game-controls">
+                    <button id="new-game-btn" class="action-btn">New Game</button>
+                </div>
             </div>
         </div>
     </div>
     
-    <script src="script.js"></script>
+    <script type="module" src="script.js"></script>
 </body>
 </html>
