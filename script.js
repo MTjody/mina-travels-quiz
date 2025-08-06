@@ -20,10 +20,10 @@ const app = initializeApp(firebaseConfig);
 // Initialize App Check for development (skip ReCaptcha for now)
 try {
     // For development, we'll use debug mode
-    self.FIREBASE_APPCHECK_DEBUG_TOKEN = true;
+    // self.FIREBASE_APPCHECK_DEBUG_TOKEN = true;
     
     const appCheck = initializeAppCheck(app, {
-        provider: new ReCaptchaV3Provider('6LflfpwrAAAAAM2-Nb1m_zCI92mPR0i8zICH5eTw'), // Test key
+        provider: new ReCaptchaV3Provider('6LflfpwrAAAAAM2-Nb1m_zCI92mPR0i8zICH5eTw'),
         isTokenAutoRefreshEnabled: true
     });
     console.log('✅ App Check initialized');

@@ -1,6 +1,6 @@
-# Country Flag Quiz 🌍
+# Mina travels quiz 🌍
 
-A simple and fun country flag quiz game featuring all 195 countries with their flag emojis. Test your geography knowledge by identifying countries from their flags!
+A simple and fun country flag quiz game featuring all 195 countries with their flag emojis. Test your Mina knowledge by identifying which countries she's travelled to!
 
 ## 🎮 How to Play
 
@@ -12,7 +12,7 @@ A simple and fun country flag quiz game featuring all 195 countries with their f
 
 ## 🚀 Live Demo
 
-Play the game here: [https://mtjody.github.io/country-flag-quiz/](https://mtjody.github.io/country-flag-quiz/)
+Play the game here: [https://mtjody.github.io/mina-travels-quiz/](https://mtjody.github.io/mina-travels-quiz/)
 
 ## 🛠️ Local Development
 
@@ -23,8 +23,8 @@ Play the game here: [https://mtjody.github.io/country-flag-quiz/](https://mtjody
 
 1. Clone this repository:
    ```bash
-   git clone https://github.com/mtjody/country-flag-quiz.git
-   cd country-flag-quiz
+   git clone https://github.com/mtjody/mina-travels-quiz.git
+   cd mina-travels-quiz
    ```
 
 2. Install dependencies:
@@ -62,12 +62,12 @@ This project is configured for easy deployment to GitHub Pages:
 3. Navigate to "Pages" section
 4. Set source to "Deploy from a branch"
 5. Select "main" branch and "/ (root)" folder
-6. Your site will be available at `https://mtjody.github.io/country-flag-quiz/`
+6. Your site will be available at `https://mtjody.github.io/mina-travels-quiz/`
 
 ## 🏗️ Project Structure
 
 ```
-country-flag-quiz/
+mina-travels-quiz/
 ├── index.html          # Main HTML file
 ├── style.css           # Styles and responsive design
 ├── script.js           # Game logic and country data
