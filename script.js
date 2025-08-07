@@ -471,6 +471,7 @@ function handleStartGame() {
     if (name.toLowerCase() === 'admin') {
         showAdminTable();
     } else {
+        showRegularGame();
         renderGrid();
     }
     saveGameData();
@@ -530,11 +531,28 @@ function handleCountryClick(e) {
         minaImage.style.objectFit = 'contain';
         flagEmoji.innerHTML = '';
         flagEmoji.appendChild(minaImage);
-        score -= 2;
+        score -= 1;
     }
     
     updateScore();
     saveGameData();
+}
+
+function showRegularGame() {
+    const playerInfo = document.querySelector('.player-info');
+    const scoreInfo = document.querySelector('.score');
+    const adminMinaImage = document.getElementById('admin-mina-image');
+    const adminTable = document.getElementById('admin-table');
+    const countriesGrid = document.getElementById('countries-grid');
+    const gameControls = document.querySelector('.game-controls');
+    
+    // Show player info and score, hide admin elements
+    playerInfo.style.display = 'block';
+    scoreInfo.style.display = 'block';
+    adminMinaImage.classList.add('hidden');
+    adminTable.classList.add('hidden');
+    countriesGrid.style.display = 'grid';
+    gameControls.style.display = 'block';
 }
 
 function renderGrid() {
@@ -590,10 +608,18 @@ function showAdminTable() {
     const adminTableBody = document.getElementById('admin-table-body');
     const countriesGrid = document.getElementById('countries-grid');
     const gameControls = document.querySelector('.game-controls');
+    const playerInfo = document.querySelector('.player-info');
+    const scoreInfo = document.querySelector('.score');
+    const adminMinaImage = document.getElementById('admin-mina-image');
     
-    // Hide grid and controls
+    // Hide grid, controls, player info and score
     countriesGrid.style.display = 'none';
     gameControls.style.display = 'none';
+    playerInfo.style.display = 'none';
+    scoreInfo.style.display = 'none';
+    
+    // Show admin mina image
+    adminMinaImage.classList.remove('hidden');
     
     // Clear existing table body
     adminTableBody.innerHTML = '';
@@ -654,6 +680,7 @@ function initGame() {
         if (playerName.toLowerCase() === 'admin') {
             showAdminTable();
         } else {
+            showRegularGame();
             renderGrid();
         }
     } else {

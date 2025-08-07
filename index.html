@@ -3,18 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grid Flag Quiz</title>
+    <title>Mina's travel Quiz</title>
+    <link rel="icon" type="image/png" href="images/mina-pilot.png">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
         <div class="quiz-container">
-            <h1>Grid Flag Quiz</h1>
+            <h1>Mina's travel Quiz</h1>
             
             <div id="welcome-screen" class="welcome-screen">
                 <div class="welcome-message">
-                    <p>Welcome to the Grid Flag Quiz!</p>
-                    <p>Test your geography knowledge by clicking on the correct countries.</p>
+                    <img class="mina-pilot" src="images/mina-pilot.png" alt="Mina Pilot" />
+                    <p>Mina has travelled to 58 countries, can you pick them all?</p>
                 </div>
                 
                 <div class="name-input-section">
@@ -27,13 +28,13 @@
             <div id="game-screen" class="game-screen hidden">
                 <div class="game-info">
                     <div class="player-info">
-                        <p>Player: <span id="player-display"></span></p>
+                        <p><span id="player-display"></span></p>
                     </div>
                     <div class="score">
                         <p>Score: <span id="score">0</span></p>
                     </div>
-                    <div class="instructions">
-                        <p>Click on the countries that match the target set!</p>
+                    <div id="admin-mina-image" class="admin-mina-image hidden">
+                        <img src="images/mina-pilot.png" class="mina-pilot" alt="Mina Pilot" />
                     </div>
                 </div>
                 
