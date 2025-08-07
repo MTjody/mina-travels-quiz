@@ -387,6 +387,11 @@ let welcomeScreen, gameScreen, playerNameInput, startGameBtn, playerDisplay;
 
 const STORAGE_KEY = 'gridFlagQuizData';
 
+function getRandomMinaImage(isCorrect) {
+    const randomNum = Math.floor(Math.random() * 4) + 1;
+    const imageType = isCorrect ? 'happy' : 'sad';
+    return `images/mina-${imageType}-${randomNum}.png`;
+}
 
 function saveGameData() {
     const gameData = {
@@ -506,11 +511,25 @@ function handleCountryClick(e) {
     
     if (targetCountries.has(countryName)) {
         item.classList.add('correct');
-        flagEmoji.textContent = '✅';
+        const minaImage = document.createElement('img');
+        minaImage.src = getRandomMinaImage(true);
+        minaImage.alt = 'Mina Happy';
+        minaImage.style.height = '100%';
+        minaImage.style.width = 'auto';
+        minaImage.style.objectFit = 'contain';
+        flagEmoji.innerHTML = '';
+        flagEmoji.appendChild(minaImage);
         score += 1;
     } else {
         item.classList.add('incorrect');
-        flagEmoji.textContent = '❌';
+        const minaImage = document.createElement('img');
+        minaImage.src = getRandomMinaImage(false);
+        minaImage.alt = 'Mina Sad';
+        minaImage.style.height = '100%';
+        minaImage.style.width = 'auto';
+        minaImage.style.objectFit = 'contain';
+        flagEmoji.innerHTML = '';
+        flagEmoji.appendChild(minaImage);
         score -= 2;
     }
     
@@ -528,10 +547,24 @@ function renderGrid() {
             const flagEmoji = item.querySelector('.flag-emoji');
             if (targetCountries.has(country.name)) {
                 item.classList.add('correct');
-                flagEmoji.textContent = '✅';
+                const minaImage = document.createElement('img');
+                minaImage.src = getRandomMinaImage(true);
+                minaImage.alt = 'Mina Happy';
+                minaImage.style.height = '100%';
+                minaImage.style.width = 'auto';
+                minaImage.style.objectFit = 'contain';
+                flagEmoji.innerHTML = '';
+                flagEmoji.appendChild(minaImage);
             } else {
                 item.classList.add('incorrect');
-                flagEmoji.textContent = '❌';
+                const minaImage = document.createElement('img');
+                minaImage.src = getRandomMinaImage(false);
+                minaImage.alt = 'Mina Sad';
+                minaImage.style.height = '100%';
+                minaImage.style.width = 'auto';
+                minaImage.style.objectFit = 'contain';
+                flagEmoji.innerHTML = '';
+                flagEmoji.appendChild(minaImage);
             }
         }
         
