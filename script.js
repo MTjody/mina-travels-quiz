@@ -393,6 +393,7 @@ function getRandomMinaImage(isCorrect) {
     return `images/mina-${imageType}-${randomNum}.png`;
 }
 
+
 function saveGameData() {
     const gameData = {
         playerName: playerName,
@@ -521,6 +522,19 @@ function handleCountryClick(e) {
         flagEmoji.innerHTML = '';
         flagEmoji.appendChild(minaImage);
         score += 1;
+        
+        // Trigger confetti from the clicked country position
+        const rect = item.getBoundingClientRect();
+        const x = (rect.left + rect.width / 2) / window.innerWidth;
+        const y = (rect.top + rect.height / 2) / window.innerHeight;
+        
+        confetti({
+            particleCount: 50,
+            angle: 90,
+            spread: 45,
+            origin: { x: x, y: y },
+            colors: ['#ffd700', '#ff6b6b', '#4ecdc4', '#ff9ff3', '#95e1d3']
+        });
     } else {
         item.classList.add('incorrect');
         const minaImage = document.createElement('img');
