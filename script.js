@@ -607,9 +607,20 @@ function renderGrid() {
 function startNewGame() {
     clickedCountries = new Set();
     score = 0;
+    playerName = '';
+    currentUserRef = null;
+    currentUserKey = null;
+    
+    clearGameData();
+    localStorage.removeItem('firebaseUserKey');
+    
     updateScore();
     renderGrid();
-    saveGameData();
+    
+    welcomeScreen.style.display = 'block';
+    gameScreen.classList.add('hidden');
+    playerNameInput.value = '';
+    playerNameInput.focus();
 }
 
 function updateScore() {
